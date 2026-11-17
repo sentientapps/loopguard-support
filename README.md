@@ -72,4 +72,4 @@ Open an issue in this repository: **[Report a problem or ask a question](../../i
 
 ## 🔒 Privacy & security
 
-LoopGuard stores only what it needs (issue IDs and keys, project keys, Atlassian account IDs of actors, counts, and your settings) inside Atlassian's Forge storage. Full details: [PRIVACY.md](PRIVACY.md).
+LoopGuard stores only what it needs (issue IDs and keys, project keys, Atlassian account IDs of actors, counts, and your settings) inside Atlassian's Forge storage. Full details: [PRIVACY.md](PRIVACY.md). How we secure the app and handle vulnerabilities: [SECURITY.md](SECURITY.md).
