@@ -1,6 +1,6 @@
 # LoopGuard for Jira — Privacy Policy
 
-_Last updated: October 31, 2026 (app version 3)_
+_Last updated: November 26, 2026 (app version 3.5)_
 
 LoopGuard for Jira ("the App"), provided by SentientApps, detects runaway Jira Automation loops and quarantines the looping issue. The App runs **natively on Atlassian Forge** and introduces **no external servers, no external databases, and no third-party subprocessors**.
 
@@ -11,16 +11,17 @@ All processing runs **inside the Atlassian Forge runtime**. The App's manifest d
 The App reads:
 
 - **Issue update events** from Jira: the issue ID, its project key, the time, the Atlassian account ID of the person or app that made the change, and which fields changed with their old and new values. Field values are used only to detect a field flipping back and forth; they are stored as one-way hashes, never as text.
-- **Recently updated issues and their change history**, every 5 minutes, to attribute changes to issues, projects, and actors.
+- **Recently updated issues and their change history**, every hour, to attribute changes to issues, projects, and actors.
 - **An Automation rules export**, only if an administrator uploads one. The App keeps rule structure only (name, trigger, components, projects, schedule, and JQL with email addresses removed). It strips web request URLs, headers, bodies, tokens, and email addresses before storing anything.
 
 ## 2. What is stored, and where
 
-All App data is stored **within Atlassian**, in Forge SQL. **No external database is used.**
+All App data is stored **within Atlassian**, in Forge SQL and Forge storage. **No external database is used.**
 
 - **Activity and alerts.** Issue keys, project keys, the Atlassian account ID of each actor, change counts, and estimated Automation steps and Rovo credits. Kept 30 days.
 - **Real-time counters.** Per-issue, per-minute update counts, with actors and field changes stored only as one-way hashes. Counters that did not trip are deleted after 48 hours; counters that tripped are deleted after 90 days.
-- **Incidents.** The issue ID, when it was quarantined, the update count, and when it was released. Deleted 90 days after release.
+- **Short-lived update markers.** For each issue update, a marker in Forge storage holds the issue ID, the time, the project key, and the actor and field changes as one-way hashes. It tells a one-off edit from a burst of updates and expires after 3 minutes.
+- **Incidents.** The issue ID, when it was quarantined, the update count, and when it was released. A detection that wrote no issue property is closed after 24 hours without further updates. Deleted 90 days after release.
 - **Settings.** Guardrails per project, allowlisted Atlassian account IDs and project keys, alert recipients (an account ID or group name), usage allowances, and preferences.
 - **Imported rule structure**, as described above, until an administrator deletes it.
 - **Usage totals and forecast alerts.** Daily estimated totals. Kept 90 days.
@@ -47,7 +48,7 @@ The App uses **no third-party subprocessors**: no external AI services, no exter
 
 ## 6. Uninstalling
 
-When the App is uninstalled, Atlassian deletes the App's Forge SQL data according to Forge data retention. **Before uninstalling, click Release all** on the Circuit Breaker tab: Jira can remove the App's access before its uninstall cleanup runs, so a `loopguard.state` property can otherwise remain on an issue until an administrator deletes it.
+When the App is uninstalled, Atlassian deletes the App's Forge SQL and Forge storage data according to Forge data retention. **Before uninstalling, click Release all** on the Circuit Breaker tab: Jira can remove the App's access before its uninstall cleanup runs, so a `loopguard.state` property can otherwise remain on an issue until an administrator deletes it.
 
 ## 7. Contact
 

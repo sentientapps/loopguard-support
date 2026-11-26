@@ -1,12 +1,12 @@
 # LoopGuard for Jira — Security Policy
 
-_Last updated: November 25, 2026 (app version 3.4)_
+_Last updated: November 26, 2026 (app version 3.5)_
 
 This page describes how SentientApps secures LoopGuard for Jira ("the App"): where it runs, how data is handled and encrypted, how access is controlled, and how we find, fix, and disclose vulnerabilities. For what data the App stores and why, see the [Privacy Policy](PRIVACY.md).
 
 ## 1. Architecture
 
-- The App is built **entirely on Atlassian Forge**. Its code runs in the Forge runtime, and its data is stored in Forge SQL, both operated by Atlassian.
+- The App is built **entirely on Atlassian Forge**. Its code runs in the Forge runtime, and its data is stored in Forge SQL and Forge storage, all operated by Atlassian.
 - **No external egress.** The App's manifest declares no remote backends and no external fetch, image, or frame permissions, and the Forge platform enforces this. The App makes no outbound requests to SentientApps or any third party.
 - **No SentientApps infrastructure.** We run no servers, databases, or cloud accounts for the App, and use no third-party subprocessors.
 
@@ -14,6 +14,7 @@ This page describes how SentientApps secures LoopGuard for Jira ("the App"): whe
 
 - The App stores only what it needs: issue IDs and keys, project keys, Atlassian account IDs of the actors behind changes, update counts, estimates, and administrator settings. It stores no names, email addresses, or avatars.
 - Field values seen in update events are kept only as **one-way hashes**, used to detect a field flipping back and forth.
+- Each issue update leaves a short-lived marker in Forge storage (issue ID, time, project key, and hashed actor and field changes) that **expires after 3 minutes**. It lets the App skip the database for one-off edits.
 - Uploaded Automation rule exports are reduced to rule structure. Web request URLs, headers, bodies, tokens, and email addresses are **stripped before anything is stored**.
 - The App's only write to Jira is one issue property (`loopguard.state`) on quarantined issues, plus an optional comment that is off by default. It never edits issue fields.
 - **Retention:** activity and alerts are deleted after 30 days; counters, incidents, and usage totals after at most 90 days.
@@ -22,7 +23,7 @@ This page describes how SentientApps secures LoopGuard for Jira ("the App"): whe
 ## 3. Encryption
 
 - **In transit:** all traffic is between the App's Forge functions and Atlassian APIs over TLS, inside Atlassian's network.
-- **At rest:** App data in Forge SQL is encrypted at rest by Atlassian's Forge platform.
+- **At rest:** App data in Forge SQL and Forge storage is encrypted at rest by Atlassian's Forge platform.
 - The App collects **no credentials, API tokens, or secrets** from customers and keeps none in its code or repositories.
 
 ## 4. Access control
