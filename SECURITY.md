@@ -1,6 +1,6 @@
 # LoopGuard for Jira — Security Policy
 
-_Last updated: November 17, 2026 (app version 3)_
+_Last updated: November 25, 2026 (app version 3.4)_
 
 This page describes how SentientApps secures LoopGuard for Jira ("the App"): where it runs, how data is handled and encrypted, how access is controlled, and how we find, fix, and disclose vulnerabilities. For what data the App stores and why, see the [Privacy Policy](PRIVACY.md).
 
@@ -27,7 +27,7 @@ This page describes how SentientApps secures LoopGuard for Jira ("the App"): whe
 
 ## 4. Access control
 
-- The App's admin page is available only to **Jira administrators**, and release actions additionally check the Jira `ADMINISTER` permission as the signed-in user.
+- The App's admin page is available only to **Jira administrators**. In addition, every admin action is checked on the server: the App asks Jira, as the signed-in user, for the global `ADMINISTER` permission and refuses the request without it. The user's identity comes from the Forge platform, not the browser.
 - The App requests only the scopes it needs: `read:jira-work`, `write:jira-work`, `storage:app`, and `report:personal-data`.
 - SentientApps staff have **no access to customer data**. App logs contain only event names, counts, and error codes (no personal data or tokens), and reach us only if a site administrator allows log sharing.
 
